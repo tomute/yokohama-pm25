@@ -18,7 +18,7 @@ class TwitterAuth(object):
 		auth.set_access_token(secret.TOKEN_KEY, secret.TOKEN_SECRET)
 		oauthapi = tweepy.API(auth)
 		return oauthapi
-		
+
 	def update(self, oauthapi, post):
 		oauthapi.update_status(post.encode('utf-8'))
 
@@ -35,7 +35,7 @@ class Pm25Data(db.Model):
 #
 places = [u'鶴見', u'神奈川', u'港北', u'磯子', u'保土ヶ谷', u'西', u'金沢', u'中', u'港南', u'旭', u'瀬谷', u'南', u'栄', u'緑', u'青葉', u'都筑', u'泉', u'浅間下', u'戸塚', u'青葉台']
 
-url = 'http://cgi.city.yokohama.lg.jp/kankyou/saigai/data/pm25_top_data.html'
+url = 'https://cgi.city.yokohama.lg.jp/kankyou/saigai/data/pm25_top_data.html'
 html = urllib2.urlopen(url).read()
 soup = BeautifulSoup(html, from_encoding='Shift_JIS')
 

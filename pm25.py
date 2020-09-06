@@ -63,7 +63,7 @@ if len(trs) != len(places) and data != '':
 	for i in range(0, len(places)):
 		tds = trs[i].findAll('td')
 		data = data + places[i] + tds[hour].get_text().strip() + u' '
-		data = data + u'#yokohama'
+	data = data + u'#yokohama'
 	# Store time.
 	pm25data = Pm25Data(time=time)
 	pm25data.put()

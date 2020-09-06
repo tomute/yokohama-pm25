@@ -20,7 +20,8 @@ class TwitterAuth(object):
 		return oauthapi
 
 	def update(self, oauthapi, post):
-		oauthapi.update_status(post.encode('utf-8'))
+		if post != '':
+			oauthapi.update_status(post.encode('utf-8'))
 
 # Class for DB access.
 class Pm25Data(db.Model):
@@ -41,34 +42,31 @@ soup = BeautifulSoup(html, from_encoding='Shift_JIS')
 
 # Get update time with the exception of parentheses.
 time = soup.find('strong').string[6:-1]
+data = time + u' (μg/m³) '
+hour = int(time[time.rfind(u'日') + 1:time.rfind(u'時')])
+
 q = Pm25Data.all()
 if q.count != 0:
 	results = q.fetch(1)
 	for p in results:
 		if p.time == time:
-			# No new data, so no update to tweet. Finish!
-			sys.exit()
+			# No new data
+			data = ''
 		else:
 			# Delete old data.
 			db.delete(p)
 
-data = time + u' (μg/m³) '
-hour = int(time[time.rfind(u'日') + 1:time.rfind(u'時')])
-
 # Cut 1st row to ignore the table header.
 trs = soup.findAll('tr')[1:]
-if len(trs) != len(places):
-	# Table format might be modified. So, stop the bot just in case.
-	sys.exit()
-
-for i in range(0, len(places)):
-	tds = trs[i].findAll('td')
-	data = data + places[i] + tds[hour].get_text().strip() + u' '
-data = data + u'#yokohama'
-
-# Store time.
-pm25data = Pm25Data(time=time)
-pm25data.put()
+if len(trs) != len(places) and data != '':
+	# If table format isn't modified.
+	for i in range(0, len(places)):
+		tds = trs[i].findAll('td')
+		data = data + places[i] + tds[hour].get_text().strip() + u' '
+		data = data + u'#yokohama'
+	# Store time.
+	pm25data = Pm25Data(time=time)
+	pm25data.put()
 
 # Debug
 # print data.encode('utf-8')

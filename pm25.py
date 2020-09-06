@@ -58,7 +58,7 @@ if q.count != 0:
 
 # Cut 1st row to ignore the table header.
 trs = soup.findAll('tr')[1:]
-if len(trs) != len(places) and data != '':
+if len(trs) == len(places) and data != '':
 	# If table format isn't modified.
 	for i in range(0, len(places)):
 		tds = trs[i].findAll('td')

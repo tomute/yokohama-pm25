@@ -41,7 +41,7 @@ html = urllib2.urlopen(url).read()
 soup = BeautifulSoup(html, from_encoding='Shift_JIS')
 
 # Get update time with the exception of parentheses.
-time = soup.find('strong').string[6:-1]
+time = soup.find('h2', class_='pm25').string[6:-1]
 data = time + u' (μg/m³) '
 hour = int(time[time.rfind(u'日') + 1:time.rfind(u'時')])
 
@@ -62,7 +62,7 @@ if len(trs) == len(places) and data != '':
 	# If table format isn't modified.
 	for i in range(0, len(places)):
 		tds = trs[i].findAll('td')
-		data = data + places[i] + tds[hour].get_text().strip() + u' '
+		data = data + places[i] + tds[hour - 1].get_text().strip() + u' '
 	data = data + u'#yokohama'
 	# Store time.
 	pm25data = Pm25Data(time=time)
